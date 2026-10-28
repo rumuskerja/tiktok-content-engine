@@ -33,6 +33,7 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("build", help="write voiceover, captions and Canva brief")
     p.add_argument("folder")
     p.add_argument("--audio-seconds", type=float, help="real voiceover length, to re-time captions")
+    p.add_argument("--audio-file", help="voiceover file in the video folder, played by the renderer")
 
     p = sub.add_parser("status", help="show or update a video's status")
     p.add_argument("folder")
@@ -58,7 +59,7 @@ def main(argv: list[str] | None = None) -> int:
                     key=pipeline.STAGES.index))
                 print("Script OK")
             else:
-                for path in pipeline.build(folder, cfg, args.audio_seconds):
+                for path in pipeline.build(folder, cfg, args.audio_seconds, args.audio_file):
                     print(f"Wrote {path}")
         except pipeline.ScriptError as err:
             print("Script needs work:", *(f"- {p}" for p in err.problems), sep="\n")

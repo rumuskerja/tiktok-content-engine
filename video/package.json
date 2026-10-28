@@ -1,0 +1,20 @@
+{
+  "name": "tiktok-video-renderer",
+  "private": true,
+  "description": "Renders a content/<video>/video_props.json into a 1080x1920 TikTok MP4 with Remotion.",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "@fontsource/plus-jakarta-sans": "5.3.0",
+    "@remotion/cli": "4.0.535",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.535"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "typescript": "5.6.3"
+  }
+}

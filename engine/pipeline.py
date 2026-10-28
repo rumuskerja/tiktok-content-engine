@@ -2,7 +2,7 @@
 
     new      -> prompt.md written, waiting for script.json
     scripted -> script.json passes the checks
-    built    -> voiceover.txt, captions.srt, canva_brief.md generated
+    built    -> voiceover.txt, captions.srt, canva_brief.md, video_props.json generated
     voiced   -> voiceover audio made (link recorded)
     designed -> Canva design made (link recorded)
     posted   -> published
@@ -15,7 +15,7 @@ import json
 import re
 from pathlib import Path
 
-from . import visuals, voiceover
+from . import video, visuals, voiceover
 from .config import ROOT, Config
 from .script import Script, estimate_seconds, validate, writing_prompt
 
@@ -73,14 +73,19 @@ def load_script(folder: Path, cfg: Config) -> Script:
     return script
 
 
-def build(folder: Path, cfg: Config, audio_seconds: float | None = None) -> list[Path]:
-    """Validate script.json and write the voiceover, caption and Canva files."""
+def build(folder: Path, cfg: Config, audio_seconds: float | None = None,
+          audio_file: str | None = None) -> list[Path]:
+    """Validate script.json and write the voiceover, caption, Canva and video files.
+
+    audio_file is a voiceover file name inside the folder; the renderer plays it.
+    """
     script = load_script(folder, cfg)
     outputs = {
         "voiceover.txt": voiceover.tts_text(script),
         "captions.srt": voiceover.srt(script, cfg, audio_seconds),
         "canva_brief.md": visuals.canva_brief(script, cfg, audio_seconds),
         "canva_query.txt": visuals.canva_query(script, cfg) + "\n",
+        "video_props.json": video.props_json(script, cfg, audio_seconds, audio_file),
     }
     written = []
     for name, text in outputs.items():
@@ -92,6 +97,8 @@ def build(folder: Path, cfg: Config, audio_seconds: float | None = None) -> list
     updates = {"estimated_seconds": estimate_seconds(script, cfg.script.words_per_second)}
     if audio_seconds:
         updates["audio_seconds"] = audio_seconds
+    if audio_file:
+        updates["audio_file"] = audio_file
     if STAGES.index(stage) < STAGES.index("built"):
         updates["stage"] = "built"
     write_status(folder, **updates)

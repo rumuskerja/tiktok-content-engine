@@ -27,7 +27,8 @@ Fix every problem it lists and re-run until it prints `Script OK`.
 ```
 python -m engine build <folder>
 ```
-Writes `voiceover.txt`, `captions.srt`, `canva_brief.md`, `canva_query.txt`.
+Writes `voiceover.txt`, `captions.srt`, `canva_brief.md`, `canva_query.txt`,
+`video_props.json`.
 
 ## 4. Voiceover (AnyToSpeech connector)
 - If `[voice] voice_id` is empty, call `voices_list` filtered by the channel
@@ -38,13 +39,25 @@ Writes `voiceover.txt`, `captions.srt`, `canva_brief.md`, `canva_query.txt`.
   and a `vibe` built from the channel tone (e.g. "energetic TikTok creator,
   fast and punchy"). You may add `[pause]` after the hook line.
 - If it returns a job, poll with `jobs_get` until done.
-- Re-time captions to the real audio length, then record the link:
+- Save the audio into the video folder (e.g. `voice.mp3`), measure it with
+  `ffprobe`, re-time everything to it, then record the link:
 ```
-python -m engine build <folder> --audio-seconds <length>
+python -m engine build <folder> --audio-seconds <length> --audio-file voice.mp3
 python -m engine status <folder> --set stage=voiced voiceover_url=<url>
 ```
 
-## 5. Visuals (Canva connector)
+## 5. Render the video (Remotion)
+```
+cd video && npm install && npm run render -- <folder>
+```
+Gives `content/<folder>/video.mp4` (1080x1920, H.264) with animated text,
+captions and the voiceover. Grab a few frames with ffmpeg and look at them
+before handing it over. No voiceover yet? Render anyway: it works as a
+text-on-screen video the person can put a trending sound under.
+
+## 6. Visuals in Canva (optional)
+Use this when the person wants to edit the frames by hand or apply their
+Canva brand kit; the Remotion render already covers the visuals otherwise.
 - Use `create-design` when available, with `canva_query.txt` as the brief and a
   9:16 vertical format. If the person wants their brand kit (`[visuals]
   brand_kit_id` set, or they ask), use `generate-design` with
@@ -57,8 +70,10 @@ python -m engine status <folder> --set stage=voiced voiceover_url=<url>
 python -m engine status <folder> --set stage=designed canva_url=<url>
 ```
 
-## 6. Hand off
-Tell the person where the voiceover and the Canva design are, paste the caption
-and hashtags from `canva_brief.md`, and remind them to lay the audio and
-`captions.srt` over the Canva pages (Canva or CapCut) before posting. After they
+## 7. Hand off
+Give the person `video.mp4` (copy it to the shared project files), the voiceover
+and any Canva design, paste the caption
+and hashtags from `canva_brief.md`. If they used Canva instead of the Remotion
+render, remind them to lay the audio and `captions.srt` over the pages (Canva
+or CapCut) before posting. After they
 post: `python -m engine status <folder> --set stage=posted`.

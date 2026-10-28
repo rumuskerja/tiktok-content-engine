@@ -2,18 +2,18 @@
 # so filling it in once is what tunes the engine to your niche.
 
 [channel]
-name = "My Channel"
-niche = "general"                 # e.g. "personal finance", "skincare", "cooking"
-audience = "curious people scrolling TikTok"
-language = "en"                   # language for script, voiceover and captions
-tone = "energetic, direct, friendly"
-cta = "Follow for part 2"         # default call to action
+name = "Rumus Kerja Bertumbuh"   # @rumuskerja.bertumbuh
+niche = "career growth and work skills"  # inferred from the handle; confirm
+audience = "Indonesian young professionals and fresh graduates who want to grow at work"
+language = "id"                   # language for script, voiceover and captions
+tone = "santai, to the point, supportive (casual Bahasa Indonesia, pakai kamu)"
+cta = "Follow buat rumus kerja berikutnya"  # default call to action
 
 [script]
 target_seconds = 35               # sweet spot for completion rate
 min_seconds = 15
 max_seconds = 60
-words_per_second = 2.6            # speaking pace used to estimate length
+words_per_second = 2.4            # speaking pace used to estimate length
 hook_max_words = 12               # the hook must land in ~3 seconds
 beats_min = 3
 beats_max = 6
@@ -21,7 +21,7 @@ beats_max = 6
 [voice]
 # AnyToSpeech voice id. Leave empty and the skill will pick one with
 # voices_list and write it back here.
-voice_id = ""
+voice_id = "Fenrir"                # AnyToSpeech Gemini "Reza", Indonesian male
 speed = 1.05
 
 [visuals]

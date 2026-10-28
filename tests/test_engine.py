@@ -72,6 +72,19 @@ class VoiceoverTests(unittest.TestCase):
         self.assertIn("Never shop hungry", brief)
 
 
+class VideoPropsTests(unittest.TestCase):
+    def test_scenes_are_contiguous_and_cover_the_video(self):
+        from engine import video
+        p = video.props(sample_script(), CFG, audio_seconds=30, audio_file="voice.mp3")
+        scenes = p["scenes"]
+        self.assertEqual(scenes[0]["from"], 0)
+        for a, b in zip(scenes, scenes[1:]):
+            self.assertEqual(a["from"] + a["durationInFrames"], b["from"])
+        self.assertEqual(p["durationInFrames"], round((30 + video.TAIL_SECONDS) * video.FPS))
+        self.assertEqual(p["audio"], "voice.mp3")
+        self.assertEqual([s["role"] for s in scenes], ["hook", "beat", "beat", "beat", "cta"])
+
+
 class PipelineTests(unittest.TestCase):
     def test_new_then_build(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -87,7 +100,8 @@ class PipelineTests(unittest.TestCase):
             (folder / "script.json").write_text(sample_script().to_json(), encoding="utf-8")
             written = pipeline.build(folder, CFG, audio_seconds=28.5)
             self.assertEqual({p.name for p in written},
-                             {"voiceover.txt", "captions.srt", "canva_brief.md", "canva_query.txt"})
+                             {"voiceover.txt", "captions.srt", "canva_brief.md", "canva_query.txt",
+                              "video_props.json"})
             status = json.loads((folder / "status.json").read_text())
             self.assertEqual(status["stage"], "built")
             self.assertEqual(status["audio_seconds"], 28.5)
