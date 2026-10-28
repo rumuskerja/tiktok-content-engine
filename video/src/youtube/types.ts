@@ -15,7 +15,7 @@ export type Sheet = {
 };
 
 export type Card = {
-  kind: "hook" | "chapter" | "recap" | "end";
+  kind: "logo" | "hook" | "chapter" | "recap" | "end";
   title: string;
   sub?: string;
   step?: string; // chapter cards set the sticky step label, e.g. "Langkah 2/4"

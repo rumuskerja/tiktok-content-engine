@@ -141,7 +141,7 @@ const fmt = (v: Value, money: boolean) => {
 
 // ---------- pieces ----------
 
-const TitleBar: React.FC<{ file: string; channel: string }> = ({ file, channel }) => (
+const TitleBar: React.FC<{ file: string; channel: string; logo?: string | null }> = ({ file, channel, logo }) => (
   <div
     style={{
       position: "absolute",
@@ -158,7 +158,10 @@ const TitleBar: React.FC<{ file: string; channel: string }> = ({ file, channel }
       fontWeight: 500,
     }}
   >
-    <div style={{ position: "absolute", left: 24, fontWeight: 800, letterSpacing: 1 }}>{channel}</div>
+    <div style={{ position: "absolute", left: 16, display: "flex", alignItems: "center", gap: 10, fontWeight: 800, letterSpacing: 1 }}>
+      {logo && <Img src={staticFile(logo)} style={{ width: 38, height: 38 }} />}
+      {channel}
+    </div>
     {file} · Excel
   </div>
 );
@@ -592,12 +595,12 @@ const CardView: React.FC<{ card: NonNullable<Beat["card"]>; local: number; frame
 }) => {
   const enter = spring({ frame: local, fps, config: { damping: 15, stiffness: 120 } });
   const exit = interpolate(local, [frames - 8, frames], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const big = card.kind === "hook" ? 120 : card.kind === "chapter" ? 96 : 76;
+  const big = card.kind === "logo" ? 44 : card.kind === "hook" ? 120 : card.kind === "chapter" ? 96 : 76;
   return (
     <AbsoluteFill
       style={{
         background: `radial-gradient(circle at 30% 30%, ${B.navy2} 0%, ${B.navy} 70%)`,
-        opacity: card.kind === "hook" ? 1 : Math.min(1, enter * 1.5) * exit,
+        opacity: card.kind === "hook" || card.kind === "logo" ? 1 : Math.min(1, enter * 1.5) * exit,
         justifyContent: "center",
         alignItems: "center",
         zIndex: 30,
@@ -605,6 +608,18 @@ const CardView: React.FC<{ card: NonNullable<Beat["card"]>; local: number; frame
       }}
     >
       <div style={{ textAlign: "center", transform: `scale(${0.92 + enter * 0.08})`, opacity: enter, padding: "0 140px" }}>
+        {card.kind === "logo" && logo && (
+          <Img
+            src={staticFile(logo)}
+            style={{
+              width: 440,
+              height: 440,
+              marginBottom: 30,
+              transform: `scale(${0.6 + enter * 0.4}) rotate(${(1 - enter) * -12}deg)`,
+              filter: `drop-shadow(0 0 ${40 * enter}px ${B.teal}88)`,
+            }}
+          />
+        )}
         {card.step && (
           <div
             style={{
@@ -638,7 +653,7 @@ const CardView: React.FC<{ card: NonNullable<Beat["card"]>; local: number; frame
             {card.sub}
           </div>
         )}
-        {card.kind === "end" && logo && <Img src={staticFile(logo)} style={{ width: 200, height: 200, marginTop: 50 }} />}
+        {card.kind === "end" && logo && <Img src={staticFile(logo)} style={{ width: 280, height: 280, marginTop: 50 }} />}
       </div>
     </AbsoluteFill>
   );
@@ -712,14 +727,14 @@ export const Tutorial: React.FC<TutorialProps> = (t) => {
     ty: from.ty + (target.ty - from.ty) * ease,
   };
 
-  const musicVol = interpolate(frame, [0, 30, durationInFrames - 90, durationInFrames], [0, 0.22, 0.22, 0], {
+  const musicVol = interpolate(frame, [0, 30, durationInFrames - 90, durationInFrames], [0, 0.28, 0.28, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
   return (
     <AbsoluteFill style={{ background: "white", fontFamily: font }}>
-      <TitleBar file={`${t.id}.xlsx`} channel={t.channel} />
+      <TitleBar file={`${t.id}.xlsx`} channel={t.channel} logo={t.logo} />
       <Ribbon />
       <FormulaBar active={cur.sticky.active} text={String(barText)} typing={typing} frame={frame} />
       <div style={{ position: "absolute", top: GRID_TOP, left: 0, width: VW, height: VH, overflow: "hidden", background: "white" }}>
@@ -743,10 +758,10 @@ export const Tutorial: React.FC<TutorialProps> = (t) => {
       {cur.beat.parts && <PartsCard parts={cur.beat.parts} local={local} fps={fps} />}
       {cur.beat.caption && !cur.beat.card && <Caption key={idx} text={cur.beat.caption} local={local} fps={fps} />}
       {cur.beat.card && <CardView card={cur.beat.card} local={local} frames={cur.frames} fps={fps} logo={t.logo} />}
-      {t.logo && !cur.beat.card && (
+      {t.logo && cur.beat.card?.kind !== "logo" && cur.beat.card?.kind !== "end" && (
         <Img
           src={staticFile(t.logo)}
-          style={{ position: "absolute", right: 24, bottom: TABS_H + 24, width: 84, height: 84, opacity: 0.9, zIndex: 18 }}
+          style={{ position: "absolute", right: 24, bottom: TABS_H + 20, width: 120, height: 120, zIndex: 35 }}
         />
       )}
       <div style={{ position: "absolute", left: 0, bottom: 0, height: 6, width: `${(frame / durationInFrames) * 100}%`, background: B.teal, zIndex: 40 }} />

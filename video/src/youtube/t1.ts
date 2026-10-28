@@ -109,6 +109,7 @@ const fillDown = (col: "E" | "F" | "G", f: (r: number) => string) => {
 const xl = (r: number, col: string) => `=XLOOKUP(B${r},Data_Produk!A:A,Data_Produk!${col}:${col})`;
 
 const beats: Beat[] = [
+  { sec: 2.5, card: { kind: "logo", title: "", sub: "Excel & slide buat kerja yang terus bertumbuh" } },
   { sec: 3.5, card: { kind: "hook", title: "VLOOKUP udah pensiun.", sub: "Excel 2026 punya pengganti yang lebih gampang." } },
   { sec: 3.5, card: { kind: "hook", title: "XLOOKUP", sub: "Nggak perlu hitung kolom · Nggak gampang rusak · Anti #N/A" } },
 
@@ -289,6 +290,6 @@ export const t1: Tutorial = {
   sheets,
   beats,
   logo: "logo.png",
-  music: null,
+  music: "music.mp3",
   sfx: { pop: "pop.wav", whoosh: "whoosh.wav" },
 };
