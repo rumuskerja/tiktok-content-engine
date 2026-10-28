@@ -4,7 +4,8 @@
   "description": "Renders a content/<video>/video_props.json into a 1080x1920 TikTok MP4 with Remotion.",
   "scripts": {
     "studio": "remotion studio src/index.ts",
-    "render": "node render.mjs"
+    "render": "node render.mjs",
+    "render:youtube": "node render-youtube.mjs"
   },
   "dependencies": {
     "@fontsource/plus-jakarta-sans": "5.3.0",

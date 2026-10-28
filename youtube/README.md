@@ -10,10 +10,21 @@ Folder ini isi eksekusi blueprint channel YouTube Rumus Kerja: Excel menengah ke
 | [`briefs/`](briefs/) | Brief produksi 6 tutorial pertama: caption per langkah, timing, efek, thumbnail, chapter |
 | [`shorts.md`](shorts.md) | 13 Shorts minggu 2 sampai 4, siap dipotong dari tutorial |
 | [`latihan/`](latihan/) | File latihan Excel untuk tiap tutorial (sheet Latihan, Kunci Jawaban, Tantangan) |
+| [`videos/`](videos/) | Aset dan paket upload per video. T1 sudah jadi video animasi lewat Remotion: [`videos/T1/upload.md`](videos/T1/upload.md) |
 
 Shorts juga bisa dibikin lewat engine TikTok di repo ini (`python -m engine new "topik"`), tapi ingat channel YouTube ini **tanpa voice over**, jadi pakai versi tanpa audio narasi.
 
-## Alur produksi satu tutorial
+## Render video animasi (tanpa rekam layar)
+
+Tutorial bisa dibikin sebagai animasi Excel di Remotion, tanpa rekam layar: naskah per adegan ada di `video/src/youtube/<id>.ts` (contoh `t1.ts`), komponennya `video/src/youtube/Tutorial.tsx`.
+
+```
+cd video && npm install
+npm run render:youtube -- T1      # youtube/videos/T1/T1.mp4 + T1-thumbnail.png
+npm run studio                    # preview sambil edit naskah
+```
+
+## Alur produksi satu tutorial (rekam layar)
 
 1. Buka brief di `briefs/` dan file latihannya di `latihan/`.
 2. Rekam layar pakai auto-zoom (Screen Studio, FocuSee, atau OBS) dengan KeyCastr/Carnac nyala, resolusi 1920x1080, zoom Excel 130%.

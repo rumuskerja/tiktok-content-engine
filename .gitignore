@@ -5,3 +5,6 @@ __pycache__/
 *.wav
 *.mp4
 node_modules/
+
+# Small sound effects used by the YouTube tutorials
+!youtube/videos/*/*.wav
