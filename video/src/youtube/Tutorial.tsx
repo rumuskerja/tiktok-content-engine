@@ -727,7 +727,7 @@ export const Tutorial: React.FC<TutorialProps> = (t) => {
     ty: from.ty + (target.ty - from.ty) * ease,
   };
 
-  const musicVol = interpolate(frame, [0, 30, durationInFrames - 90, durationInFrames], [0, 0.28, 0.28, 0], {
+  const musicVol = interpolate(frame, [0, 30, durationInFrames - 90, durationInFrames], [0, 0.6, 0.6, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
