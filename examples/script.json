@@ -1,0 +1,36 @@
+{
+  "topic": "saving money on groceries",
+  "hook_formula": "mistake",
+  "hook": {
+    "line": "You're grocery shopping wrong.",
+    "on_screen": "Shopping wrong?",
+    "visual": "Close-up of a full cart"
+  },
+  "beats": [
+    {
+      "line": "First, never shop hungry. You'll spend more on snacks you didn't plan for.",
+      "on_screen": "Never shop hungry",
+      "visual": "Person eating before leaving home"
+    },
+    {
+      "line": "Second, check the bottom shelf. The cheapest brands live down there on purpose.",
+      "on_screen": "Look down",
+      "visual": "Camera tilts to bottom shelf"
+    },
+    {
+      "line": "Third, buy the store brand. It's often made in the exact same factory as the big name.",
+      "on_screen": "Store brand = same",
+      "visual": "Two identical products side by side"
+    }
+  ],
+  "cta": {
+    "line": "Follow for part two, where I cut my bill in half.",
+    "on_screen": "Part 2 next",
+    "visual": "Receipt with total circled"
+  },
+  "caption": "3 grocery tricks that actually work",
+  "hashtags": [
+    "#groceries",
+    "#savemoney"
+  ]
+}

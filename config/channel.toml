@@ -1,0 +1,31 @@
+# Channel profile. Every video the engine makes reads from this file,
+# so filling it in once is what tunes the engine to your niche.
+
+[channel]
+name = "My Channel"
+niche = "general"                 # e.g. "personal finance", "skincare", "cooking"
+audience = "curious people scrolling TikTok"
+language = "en"                   # language for script, voiceover and captions
+tone = "energetic, direct, friendly"
+cta = "Follow for part 2"         # default call to action
+
+[script]
+target_seconds = 35               # sweet spot for completion rate
+min_seconds = 15
+max_seconds = 60
+words_per_second = 2.6            # speaking pace used to estimate length
+hook_max_words = 12               # the hook must land in ~3 seconds
+beats_min = 3
+beats_max = 6
+
+[voice]
+# AnyToSpeech voice id. Leave empty and the skill will pick one with
+# voices_list and write it back here.
+voice_id = ""
+speed = 1.05
+
+[visuals]
+# Canva brand kit id (from list-brand-kits). Empty means no brand kit.
+brand_kit_id = ""
+design_type = "your_story"        # Canva 9:16 vertical (1080x1920), same frame as TikTok
+style = "bold captions, high contrast, one idea per frame"
