@@ -32,7 +32,7 @@ Font: **Poppins Bold** untuk judul dan thumbnail, **Inter** untuk caption.
 
 - Kiri: logo lengkap.
 - Tengah teks besar: **"Belajar Excel tanpa suara, tanpa ribet."**
-- Bawah kecil: "Tutorial baru tiap Selasa & Jumat · 19.00 WIB"
+- Bawah kecil: "Tutorial baru tiap Jumat · 19.00 WIB"
 - Kanan: mockup kecil tabel → slide (before/after).
 
 ## Deskripsi channel
@@ -41,7 +41,7 @@ Font: **Poppins Bold** untuk judul dan thumbnail, **Inter** untuk caption.
 >
 > Semua video tanpa suara, jadi bisa ditonton di KRL, di kantor, atau pas istirahat. Tiap tutorial ada file latihannya, gratis.
 >
-> Tutorial baru tiap Selasa & Jumat, 19.00 WIB. Shorts tiap hari kerja.
+> Tutorial baru tiap Jumat, 19.00 WIB. Shorts tiap Sabtu dan Minggu.
 >
 > Level: Dasar · Menengah · Jago. Mulai dari playlist yang cocok buat kamu.
 

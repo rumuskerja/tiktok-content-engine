@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| Tayang | Selasa 10 November 2026, 19.00 WIB |
+| Tayang | Jumat 30 Oktober 2026, 19.00 WIB (video jadi: [`videos/T1/`](../videos/T1/upload.md)) |
 | Pillar · Level | Rumus Sakti · Menengah |
 | Durasi target | 7 sampai 8 menit |
 | File latihan | [`latihan/T1-xlookup.xlsx`](../latihan/T1-xlookup.xlsx) |

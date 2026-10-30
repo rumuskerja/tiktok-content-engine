@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| Tayang | Selasa 17 November 2026, 19.00 WIB |
+| Tayang | Jumat 13 November 2026, 19.00 WIB |
 | Pillar · Level | Slide yang Menjual · Menengah |
 | Durasi target | 7 sampai 9 menit |
 | File latihan | [`latihan/T3-tabel-ke-slide.xlsx`](../latihan/T3-tabel-ke-slide.xlsx) |

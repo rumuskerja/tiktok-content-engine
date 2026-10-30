@@ -1,6 +1,6 @@
 # Upload T1 · Berhenti Pakai VLOOKUP, Ini Penggantinya di 2026
 
-Jadwal: **Selasa 10 November 2026, 19.00 WIB** (set sebagai Scheduled di YouTube Studio).
+Jadwal: **Jumat 30 Oktober 2026, 19.00 WIB** (upload malam ini, atau set sebagai Scheduled di YouTube Studio).
 File: `T1.mp4` (1920x1080, 2:51, tanpa narasi, musik lo-fi orisinal + sound effect) dan `T1-thumbnail.png` (1280x720).
 Render ulang: `cd video && npm run render:youtube -- T1`.
 
@@ -38,7 +38,7 @@ Pakai Excel 2016/2019? Jawaban versi INDEX + MATCH ada di file latihan.
 =XLOOKUP(B15,Data_Produk!A:A,Data_Produk!B:B,"Tidak ada")
 =XLOOKUP(E2&F2,A2:A10&B2:B10,C2:C10)
 
-🔁 Lanjut belajar: Laporan 2 Jam Jadi 2 Menit dengan Power Query [link setelah tayang 13 Nov]
+🔁 Lanjut belajar: Laporan 2 Jam Jadi 2 Menit dengan Power Query [link setelah tayang Jumat 6 Nov]
 
 #Excel #XLOOKUP #TutorialExcel
 ```

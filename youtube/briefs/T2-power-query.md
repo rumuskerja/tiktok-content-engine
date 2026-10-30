@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| Tayang | Jumat 13 November 2026, 19.00 WIB |
+| Tayang | Jumat 6 November 2026, 19.00 WIB |
 | Pillar · Level | Otomasi & Rapihin Data · Menengah |
 | Durasi target | 8 sampai 10 menit |
 | File latihan | [`latihan/T2-power-query/`](../latihan/T2-power-query/) (3 file cabang yang sengaja berantakan) |

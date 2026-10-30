@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| Tayang | Selasa 24 November 2026, 19.00 WIB |
+| Tayang | Jumat 27 November 2026, 19.00 WIB |
 | Pillar · Level | Otomasi & Rapihin Data · Menengah |
 | Durasi target | 6 sampai 8 menit |
 | File latihan | [`latihan/T5-absensi.xlsx`](../latihan/T5-absensi.xlsx) (10 karyawan, log 2 sampai 27 Nov 2026) |

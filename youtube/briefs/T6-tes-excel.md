@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| Tayang | Jumat 27 November 2026, 19.00 WIB |
+| Tayang | Jumat 4 Desember 2026, 19.00 WIB |
 | Pillar · Level | Tes & Karier · Menengah |
 | Durasi target | 8 sampai 10 menit |
 | File latihan | [`latihan/T6-tes-excel.xlsx`](../latihan/T6-tes-excel.xlsx) (10 soal + kunci) |

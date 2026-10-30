@@ -4,11 +4,11 @@ Folder ini isi eksekusi blueprint channel YouTube Rumus Kerja: Excel menengah ke
 
 | File | Isi |
 | --- | --- |
-| [`calendar.md`](calendar.md) | Kalender konten November 2026 (tampilan per minggu) |
+| [`calendar.md`](calendar.md) | Kalender konten 30 Oktober sampai 27 Desember 2026: 1 tutorial tiap akhir pekan |
 | [`calendar.csv`](calendar.csv) | Data kalender yang sama, buat dibuka di Excel atau Google Sheets dan update status |
 | [`channel-setup.md`](channel-setup.md) | Nama, handle, deskripsi channel, banner, playlist, template deskripsi video, aturan visual |
 | [`briefs/`](briefs/) | Brief produksi 6 tutorial pertama: caption per langkah, timing, efek, thumbnail, chapter |
-| [`shorts.md`](shorts.md) | 13 Shorts minggu 2 sampai 4, siap dipotong dari tutorial |
+| [`shorts.md`](shorts.md) | 18 Shorts, 2 tiap akhir pekan, dipotong dari tutorial pekan itu |
 | [`latihan/`](latihan/) | File latihan Excel untuk tiap tutorial (sheet Latihan, Kunci Jawaban, Tantangan) |
 | [`videos/`](videos/) | Aset dan paket upload per video. T1 sudah jadi video animasi lewat Remotion: [`videos/T1/upload.md`](videos/T1/upload.md) |
 
@@ -30,28 +30,25 @@ npm run studio                    # preview sambil edit naskah
 2. Rekam layar pakai auto-zoom (Screen Studio, FocuSee, atau OBS) dengan KeyCastr/Carnac nyala, resolusi 1920x1080, zoom Excel 130%.
 3. Ketik rumus pelan, beri jeda 1 detik setelah hasil muncul.
 4. Edit di CapCut: tempel caption persis dari tabel brief, tambah callout, sound effect "pop" tiap ganti langkah, musik lo-fi di -25 dB.
-5. Export, upload Selasa atau Jumat 19.00 WIB, isi deskripsi pakai template di `channel-setup.md`, lampirkan link file latihan.
+5. Export, upload Jumat 19.00 WIB (paling telat Minggu), isi deskripsi pakai template di `channel-setup.md`, lampirkan link file latihan.
 6. Potong 1 sampai 2 Shorts dari momen before/after (lihat `shorts.md`).
-7. Ubah status di `calendar.csv`: `belum` → `rekam` → `edit` → `tayang`.
+7. Ubah status di `calendar.csv`: `belum` → `siap` → `tayang`.
 
 ## Review
 
-Tiap akhir bulan (pertama: 29 November 2026) cek YouTube Studio:
+Tiap akhir bulan (Minggu 29 November dan 27 Desember 2026) cek YouTube Studio:
 
 - **CTR thumbnail** di atas 5%. Di bawah itu, ganti thumbnail dulu sebelum ganti topik.
 - **Retensi 30 detik pertama** di atas 60%. Kalau jebol, hook atau before/after kurang cepat.
 - **Topik dengan view per hari tertinggi**: bikin 2 video turunan dari topik itu bulan depan.
 - **Komentar "minta dibahas"**: masukin ke bank ide di bawah.
 
-## Bank ide (Desember dan seterusnya)
+## Bank ide (Januari 2027 dan seterusnya)
 
 - LAMBDA: bikin rumus sendiri tanpa VBA
-- FILTER + SORT: laporan yang update sendiri
 - GROUPBY dan PIVOTBY: pivot tanpa PivotTable
 - Copilot di Excel: Kerja 1 Hari Jadi 10 Menit
 - Python in Excel buat orang non-programmer
-- Dari Data Mentah ke Presentasi Direksi dalam 15 Menit (seri Sheet ke Slide)
-- Template budget event kantor
 - Rumus Excel yang Nggak Diajarin di Kampus
 - Morph di PowerPoint: animasi chart yang bikin rapat melek
 - Rekap THR dan lembur otomatis
