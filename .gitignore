@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+*.mp3
+*.wav
+*.mp4
+node_modules/
+
+# Small sound effects used by the YouTube tutorials
+!youtube/videos/*/*.wav
+!youtube/videos/*/music.mp3
