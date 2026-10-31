@@ -1,6 +1,7 @@
 // Usage: npm run render:youtube -- <id> [out dir]
-// Renders the 16:9 tutorial <id> (e.g. T1) and its thumbnail, using
-// youtube/videos/<id>/ as the public dir (logo, sound effects).
+// Renders the tutorial or Short <id> (e.g. T1, S01) into youtube/videos/<id>/,
+// plus a thumbnail for tutorials. youtube/assets/ (logo, music, sound effects)
+// is the public dir.
 import { execFileSync } from "node:child_process";
 import { mkdirSync } from "node:fs";
 import path from "node:path";
@@ -11,13 +12,14 @@ if (!id) {
   process.exit(1);
 }
 const root = path.resolve(import.meta.dirname, "..");
-const pub = path.join(root, "youtube", "videos", id);
-const out = outArg ? path.resolve(outArg) : pub;
+const pub = path.join(root, "youtube", "assets");
+const out = outArg ? path.resolve(outArg) : path.join(root, "youtube", "videos", id);
 mkdirSync(out, { recursive: true });
 
 const extra = process.env.REMOTION_BROWSER ? [`--browser-executable=${process.env.REMOTION_BROWSER}`] : [];
 const run = (args) => execFileSync("npx", ["remotion", ...args, `--public-dir=${pub}`, ...extra], { stdio: "inherit", cwd: import.meta.dirname });
 
 run(["render", "src/index.ts", id, path.join(out, `${id}.mp4`), "--codec=h264", "--crf=18"]);
-run(["still", "src/index.ts", `${id}-thumbnail`, path.join(out, `${id}-thumbnail.png`)]);
-console.log(`Rendered ${id}.mp4 and ${id}-thumbnail.png into ${out}`);
+// Shorts get their cover frame picked in the YouTube app, so only tutorials have a thumbnail.
+if (id.startsWith("T")) run(["still", "src/index.ts", `${id}-thumbnail`, path.join(out, `${id}-thumbnail.png`)]);
+console.log(`Rendered ${id} into ${out}`);

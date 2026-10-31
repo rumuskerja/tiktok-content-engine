@@ -9,8 +9,8 @@ Ritme: **1 tutorial tiap akhir pekan**. Tutorial tayang Jumat 19.00 WIB (kalau t
 | Tanggal | Format | Pillar | Level | Judul / tugas | Brief |
 | --- | --- | --- | --- | --- | --- |
 | Jum 30 Okt | Tutorial (19.00) | Rumus Sakti | Menengah | T1 · Berhenti Pakai VLOOKUP, Ini Penggantinya di 2026 | [upload.md](videos/T1/upload.md) |
-| Sab 31 Okt | Short (12.00) | Rumus Sakti | - | S01 · 1 Rumus 1 Hari: XLOOKUP dalam 30 detik | [shorts.md](shorts.md) |
-| Min 1 Nov | Short (12.00) | Rumus Sakti | - | S02 · Tebak Hasil Rumus: XLOOKUP kalau data nggak ketemu | [shorts.md](shorts.md) |
+| Sab 31 Okt | Short (12.00) | Rumus Sakti | - | S01 · 1 Rumus 1 Hari: XLOOKUP dalam 30 detik (video siap) | [shorts-pekan-1.md](videos/shorts-pekan-1.md) |
+| Min 1 Nov | Short (12.00) | Rumus Sakti | - | S02 · Tebak Hasil Rumus: XLOOKUP kalau data nggak ketemu (video siap) | [shorts-pekan-1.md](videos/shorts-pekan-1.md) |
 | Sel 3 Nov | Produksi | - | - | Siapkan T2: render video, thumbnail, isi upload.md | [T2-power-query.md](briefs/T2-power-query.md) |
 
 ## Pekan 2 · 6 Nov sampai 8 Nov

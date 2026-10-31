@@ -56,7 +56,7 @@ const TARGET: [string, string, number][] = [
 const find = (kode: string) => PRODUK.find((p) => p[0] === kode);
 const NA: Cell = { v: "#N/A", error: true };
 
-const sheets: Sheet[] = [
+export const sheets: Sheet[] = [
   {
     name: "Data_Produk",
     widths: [110, 300, 170, 180],
@@ -94,7 +94,7 @@ const sheets: Sheet[] = [
 const ROWS = Array.from({ length: 14 }, (_, i) => i + 2); // rows 2..15 are on screen
 
 // Fill-down results for rows 3..15.
-const fillDown = (col: "E" | "F" | "G", f: (r: number) => string) => {
+export const fillDown = (col: "E" | "F" | "G", f: (r: number) => string) => {
   const out: Record<string, Cell> = {};
   for (const r of ROWS.slice(1)) {
     const [, kode, qty] = TRX[r - 2];
@@ -106,7 +106,7 @@ const fillDown = (col: "E" | "F" | "G", f: (r: number) => string) => {
   return out;
 };
 
-const xl = (r: number, col: string) => `=XLOOKUP(B${r},Data_Produk!A:A,Data_Produk!${col}:${col})`;
+export const xl = (r: number, col: string) => `=XLOOKUP(B${r},Data_Produk!A:A,Data_Produk!${col}:${col})`;
 
 const beats: Beat[] = [
   { sec: 2.5, card: { kind: "logo", title: "", sub: "Excel & slide buat kerja yang terus bertumbuh" } },

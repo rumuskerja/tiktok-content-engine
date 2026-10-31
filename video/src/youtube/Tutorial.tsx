@@ -9,6 +9,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import { createContext, useContext } from "react";
 import "@fontsource/plus-jakarta-sans/latin-500.css";
 import "@fontsource/plus-jakarta-sans/latin-800.css";
 import type { Beat, Cell, Sheet, Tutorial as TutorialProps, Value } from "./types";
@@ -28,22 +29,27 @@ export const B = {
 export const font = "'Plus Jakarta Sans', sans-serif";
 export const mono = "'DejaVu Sans Mono', 'Menlo', 'Consolas', monospace";
 
-const W = 1920;
-const H = 1080;
 const TITLE_H = 48;
 const RIBBON_H = 64;
 const FBAR_H = 76;
 const TABS_H = 46;
 const GRID_TOP = TITLE_H + RIBBON_H + FBAR_H;
-const VW = W;
-const VH = H - GRID_TOP - TABS_H;
 const ROWHEAD_W = 64;
 const COLHEAD_H = 40;
 const ROW_H = 46;
 const EXTRA_COL_W = 150;
 const N_COLS = 12;
 const N_ROWS = 32;
-const CAPTION_SPACE = 150; // the caption covers the bottom of the grid
+
+// The Excel window fills the frame in 16:9; in a 9:16 Short it sits under a
+// header and the caption moves below it.
+type Dims = { W: number; H: number; short: boolean };
+const DimCtx = createContext<Dims>({ W: 1920, H: 1080, short: false });
+const useDims = () => {
+  const d = useContext(DimCtx);
+  return { ...d, VW: d.W, VH: d.H - GRID_TOP - TABS_H };
+};
+const SHORT = { top: 330, winH: 1150, captionTop: 1510 };
 
 // ---------- addresses ----------
 
@@ -141,7 +147,9 @@ const fmt = (v: Value, money: boolean) => {
 
 // ---------- pieces ----------
 
-const TitleBar: React.FC<{ file: string; channel: string; logo?: string | null }> = ({ file, channel, logo }) => (
+const TitleBar: React.FC<{ file: string; channel: string; logo?: string | null }> = ({ file, channel, logo }) => {
+  const { W, short } = useDims();
+  return (
   <div
     style={{
       position: "absolute",
@@ -162,11 +170,14 @@ const TitleBar: React.FC<{ file: string; channel: string; logo?: string | null }
       {logo && <Img src={staticFile(logo)} style={{ width: 38, height: 38 }} />}
       {channel}
     </div>
-    {file} · Excel
+    {!short && `${file} · Excel`}
   </div>
-);
+  );
+};
 
-const Ribbon: React.FC = () => (
+const Ribbon: React.FC = () => {
+  const { W, short } = useDims();
+  return (
   <div
     style={{
       position: "absolute",
@@ -184,7 +195,7 @@ const Ribbon: React.FC = () => (
       color: B.ink,
     }}
   >
-    {["File", "Home", "Insert", "Page Layout", "Formulas", "Data", "Review", "View"].map((tab) => (
+    {(short ? ["Home", "Insert", "Formulas", "Data"] : ["File", "Home", "Insert", "Page Layout", "Formulas", "Data", "Review", "View"]).map((tab) => (
       <div
         key={tab}
         style={{
@@ -198,14 +209,17 @@ const Ribbon: React.FC = () => (
       </div>
     ))}
   </div>
-);
+  );
+};
 
 const FormulaBar: React.FC<{ active: string; text: string; typing: boolean; frame: number }> = ({
   active,
   text,
   typing,
   frame,
-}) => (
+}) => {
+  const { W, short } = useDims();
+  return (
   <div
     style={{
       position: "absolute",
@@ -223,7 +237,7 @@ const FormulaBar: React.FC<{ active: string; text: string; typing: boolean; fram
   >
     <div
       style={{
-        width: 150,
+        width: short ? 90 : 150,
         height: 50,
         marginLeft: 16,
         border: `1px solid ${B.grid}`,
@@ -237,15 +251,20 @@ const FormulaBar: React.FC<{ active: string; text: string; typing: boolean; fram
     >
       {active}
     </div>
-    <div style={{ margin: "0 22px", fontStyle: "italic", color: "#6B7280", fontFamily: "serif", fontSize: 30 }}>fx</div>
-    <div style={{ fontFamily: mono, fontSize: 32, whiteSpace: "pre" }}>
-      {text}
-      {typing && <span style={{ opacity: Math.floor(frame / 8) % 2 ? 0 : 1, color: "#1D6F42" }}>|</span>}
+    <div style={{ margin: short ? "0 12px" : "0 22px", fontStyle: "italic", color: "#6B7280", fontFamily: "serif", fontSize: 30 }}>fx</div>
+    <div style={{ fontFamily: mono, fontSize: short ? 24 : 32, whiteSpace: "pre", overflow: "hidden", flex: 1, display: "flex", justifyContent: short && text.length > 34 ? "flex-end" : "flex-start", paddingRight: 16 }}>
+      <span>
+        {text}
+        {typing && <span style={{ opacity: Math.floor(frame / 8) % 2 ? 0 : 1, color: "#1D6F42" }}>|</span>}
+      </span>
     </div>
   </div>
-);
+  );
+};
 
-const SheetTabs: React.FC<{ sheets: Sheet[]; current: string }> = ({ sheets, current }) => (
+const SheetTabs: React.FC<{ sheets: Sheet[]; current: string }> = ({ sheets, current }) => {
+  const { W, H, short } = useDims();
+  return (
   <div
     style={{
       position: "absolute",
@@ -257,7 +276,7 @@ const SheetTabs: React.FC<{ sheets: Sheet[]; current: string }> = ({ sheets, cur
       borderTop: `1px solid ${B.grid}`,
       display: "flex",
       alignItems: "stretch",
-      paddingLeft: 90,
+      paddingLeft: short ? 20 : 90,
       fontSize: 20,
     }}
   >
@@ -280,7 +299,8 @@ const SheetTabs: React.FC<{ sheets: Sheet[]; current: string }> = ({ sheets, cur
         </div>
       ))}
   </div>
-);
+  );
+};
 
 const Grid: React.FC<{
   sheet: Sheet;
@@ -438,24 +458,24 @@ const Box: React.FC<{ sheet: Sheet; range: string; color: string; local: number 
   );
 };
 
-const camera = (sheet: Sheet, focus: string) => {
+const camera = (sheet: Sheet, focus: string, VW: number, VH: number, captionSpace: number) => {
   const r = rangeRect(sheet, focus);
-  const availH = VH - CAPTION_SPACE;
+  const availH = VH - captionSpace;
   const s = Math.max(1, Math.min(2.3, (VW * 0.9) / r.w, (availH * 0.88) / r.h));
   const tx = Math.min(0, VW / 2 - (r.x + r.w / 2) * s);
   const ty = Math.min(0, availH / 2 - (r.y + r.h / 2) * s);
   return { s, tx, ty };
 };
 
-const Caption: React.FC<{ text: string; local: number; fps: number }> = ({ text, local, fps }) => {
+const Caption: React.FC<{ text: string; local: number; fps: number; short: boolean }> = ({ text, local, fps, short }) => {
   const pop = spring({ frame: local, fps, config: { damping: 18, stiffness: 200 } });
   return (
     <div
       style={{
         position: "absolute",
-        left: 160,
-        right: 160,
-        bottom: TABS_H + 34,
+        left: short ? 40 : 160,
+        right: short ? 40 : 160,
+        ...(short ? { top: SHORT.captionTop } : { bottom: TABS_H + 34 }),
         display: "flex",
         justifyContent: "center",
         zIndex: 20,
@@ -467,7 +487,7 @@ const Caption: React.FC<{ text: string; local: number; fps: number }> = ({ text,
         style={{
           background: "rgba(15,28,46,0.92)",
           color: B.white,
-          fontSize: 46,
+          fontSize: short ? 54 : 46,
           fontWeight: 800,
           lineHeight: 1.25,
           padding: "16px 34px",
@@ -484,12 +504,13 @@ const Caption: React.FC<{ text: string; local: number; fps: number }> = ({ text,
 };
 
 const PartsCard: React.FC<{ parts: NonNullable<Beat["parts"]>; local: number; fps: number }> = ({ parts, local, fps }) => {
+  const { W, short } = useDims();
   const enter = spring({ frame: local, fps, config: { damping: 16 } });
   return (
     <div
       style={{
         position: "absolute",
-        bottom: TABS_H + 170,
+        bottom: short ? TABS_H + 30 : TABS_H + 170,
         left: 0,
         width: W,
         display: "flex",
@@ -506,6 +527,10 @@ const PartsCard: React.FC<{ parts: NonNullable<Beat["parts"]>; local: number; fp
           padding: "30px 40px",
           display: "flex",
           alignItems: "flex-start",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          rowGap: 18,
+          maxWidth: W - 40,
           gap: 6,
           boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
         }}
@@ -514,7 +539,7 @@ const PartsCard: React.FC<{ parts: NonNullable<Beat["parts"]>; local: number; fp
           const shown = interpolate(local, [8 + i * 8, 16 + i * 8], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
           return (
             <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <div style={{ fontFamily: mono, fontSize: 40, color: p.color ?? B.white, fontWeight: 800, whiteSpace: "pre" }}>
+              <div style={{ fontFamily: mono, fontSize: short ? 34 : 40, color: p.color ?? B.white, fontWeight: 800, whiteSpace: "pre" }}>
                 {p.text}
               </div>
               {p.label && (
@@ -543,11 +568,13 @@ const PartsCard: React.FC<{ parts: NonNullable<Beat["parts"]>; local: number; fp
   );
 };
 
-const StepLabel: React.FC<{ step: string; badge?: string; keycap?: string; local: number }> = ({ step, badge, keycap, local }) => (
+const StepLabel: React.FC<{ step: string; badge?: string; keycap?: string; local: number }> = ({ step, badge, keycap, local }) => {
+  const { short } = useDims();
+  return (
   <div
     style={{
       position: "absolute",
-      top: TITLE_H + RIBBON_H + 12,
+      top: short ? GRID_TOP + 14 : TITLE_H + RIBBON_H + 12,
       right: 30,
       display: "flex",
       flexDirection: "column",
@@ -584,6 +611,19 @@ const StepLabel: React.FC<{ step: string; badge?: string; keycap?: string; local
       </div>
     )}
   </div>
+  );
+};
+
+const ShortHeader: React.FC<{ header: NonNullable<TutorialProps["header"]>; logo?: string | null }> = ({ header, logo }) => (
+  <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: SHORT.top, padding: "100px 40px 0", display: "flex", gap: 28, alignItems: "center" }}>
+    {logo && <Img src={staticFile(logo)} style={{ width: 150, height: 150, flexShrink: 0 }} />}
+    <div>
+      <div style={{ display: "inline-block", background: B.yellow, color: B.navy, fontWeight: 800, fontSize: 30, letterSpacing: 2, padding: "6px 18px", borderRadius: 10 }}>
+        {header.series.toUpperCase()}
+      </div>
+      <div style={{ color: B.white, fontWeight: 800, fontSize: 56, lineHeight: 1.1, marginTop: 14 }}>{header.title}</div>
+    </div>
+  </div>
 );
 
 const CardView: React.FC<{ card: NonNullable<Beat["card"]>; local: number; frames: number; fps: number; logo?: string | null }> = ({
@@ -593,6 +633,8 @@ const CardView: React.FC<{ card: NonNullable<Beat["card"]>; local: number; frame
   fps,
   logo,
 }) => {
+  const { width, height } = useVideoConfig();
+  const short = height > width;
   const enter = spring({ frame: local, fps, config: { damping: 15, stiffness: 120 } });
   const exit = interpolate(local, [frames - 8, frames], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const big = card.kind === "logo" ? 44 : card.kind === "hook" ? 120 : card.kind === "chapter" ? 96 : 76;
@@ -607,7 +649,7 @@ const CardView: React.FC<{ card: NonNullable<Beat["card"]>; local: number; frame
         fontFamily: font,
       }}
     >
-      <div style={{ textAlign: "center", transform: `scale(${0.92 + enter * 0.08})`, opacity: enter, padding: "0 140px" }}>
+      <div style={{ textAlign: "center", transform: `scale(${0.92 + enter * 0.08})`, opacity: enter, padding: short ? "0 70px" : "0 140px" }}>
         {card.kind === "logo" && logo && (
           <Img
             src={staticFile(logo)}
@@ -680,7 +722,11 @@ const Sfx: React.FC<{ timeline: Timed[]; sfx: NonNullable<TutorialProps["sfx"]> 
 
 export const Tutorial: React.FC<TutorialProps> = (t) => {
   const frame = useCurrentFrame();
-  const { fps, durationInFrames } = useVideoConfig();
+  const { fps, durationInFrames, width, height } = useVideoConfig();
+  const short = height > width;
+  const dims: Dims = { W: width, H: short ? SHORT.winH : height, short };
+  const VW = dims.W;
+  const VH = dims.H - GRID_TOP - TABS_H;
   const timeline = buildTimeline(t);
   const idx = Math.max(0, timeline.findIndex((b) => frame >= b.from && frame < b.from + b.frames));
   const cur = timeline[idx];
@@ -716,9 +762,10 @@ export const Tutorial: React.FC<TutorialProps> = (t) => {
 
   // Camera eases from the previous beat's framing.
   const prev = timeline[idx - 1];
-  const target = camera(sheet, cur.sticky.focus);
+  const capSpace = short ? 30 : 150;
+  const target = camera(sheet, cur.sticky.focus, VW, VH, capSpace);
   const sameSheet = prev && prev.sticky.sheet === cur.sticky.sheet;
-  const from = sameSheet ? camera(sheet, prev.sticky.focus) : target;
+  const from = sameSheet ? camera(sheet, prev.sticky.focus, VW, VH, capSpace) : target;
   const e = interpolate(local, [0, 22], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const ease = 1 - Math.pow(1 - e, 3);
   const cam = {
@@ -733,7 +780,12 @@ export const Tutorial: React.FC<TutorialProps> = (t) => {
   });
 
   return (
-    <AbsoluteFill style={{ background: "white", fontFamily: font }}>
+    <AbsoluteFill
+      style={{ background: short ? `radial-gradient(circle at 30% 10%, ${B.navy2} 0%, ${B.navy} 70%)` : "white", fontFamily: font }}
+    >
+      {short && t.header && <ShortHeader header={t.header} logo={t.logo} />}
+      <DimCtx.Provider value={dims}>
+      <div style={{ position: "absolute", top: short ? SHORT.top : 0, left: 0, width: dims.W, height: dims.H, overflow: "hidden", background: "white" }}>
       <TitleBar file={`${t.id}.xlsx`} channel={t.channel} logo={t.logo} />
       <Ribbon />
       <FormulaBar active={cur.sticky.active} text={String(barText)} typing={typing} frame={frame} />
@@ -756,9 +808,11 @@ export const Tutorial: React.FC<TutorialProps> = (t) => {
       <SheetTabs sheets={t.sheets} current={sheet.tabAs ?? sheet.name} />
       {!cur.beat.card && <StepLabel step={cur.sticky.step} badge={cur.beat.badge} keycap={cur.beat.key} local={local} />}
       {cur.beat.parts && <PartsCard parts={cur.beat.parts} local={local} fps={fps} />}
-      {cur.beat.caption && !cur.beat.card && <Caption key={idx} text={cur.beat.caption} local={local} fps={fps} />}
+      </div>
+      </DimCtx.Provider>
+      {cur.beat.caption && !cur.beat.card && <Caption key={idx} text={cur.beat.caption} local={local} fps={fps} short={short} />}
       {cur.beat.card && <CardView card={cur.beat.card} local={local} frames={cur.frames} fps={fps} logo={t.logo} />}
-      {t.logo && cur.beat.card?.kind !== "logo" && cur.beat.card?.kind !== "end" && (
+      {t.logo && !short && cur.beat.card?.kind !== "logo" && cur.beat.card?.kind !== "end" && (
         <Img
           src={staticFile(t.logo)}
           style={{ position: "absolute", right: 24, bottom: TABS_H + 20, width: 120, height: 120, zIndex: 35 }}

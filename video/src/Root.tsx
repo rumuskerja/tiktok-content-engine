@@ -4,6 +4,7 @@ import type { VideoProps } from "./types";
 import { Tutorial, tutorialFrames } from "./youtube/Tutorial";
 import { Thumbnail } from "./youtube/Thumbnail";
 import { t1 } from "./youtube/t1";
+import { s01, s02 } from "./youtube/shorts";
 
 const placeholder: VideoProps = {
   fps: 30,
@@ -44,5 +45,9 @@ export const Root: React.FC = () => (
       fps={30}
       durationInFrames={1}
     />
+    {/* YouTube Shorts (9:16), same component in a vertical layout. */}
+    {[s01, s02].map((s) => (
+      <Composition key={s.id} id={s.id} component={Tutorial} defaultProps={s} width={1080} height={1920} fps={s.fps} durationInFrames={tutorialFrames(s)} />
+    ))}
   </>
 );

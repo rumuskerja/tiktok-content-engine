@@ -10,7 +10,7 @@ Folder ini isi eksekusi blueprint channel YouTube Rumus Kerja: Excel menengah ke
 | [`briefs/`](briefs/) | Brief produksi 6 tutorial pertama: caption per langkah, timing, efek, thumbnail, chapter |
 | [`shorts.md`](shorts.md) | 18 Shorts, 2 tiap akhir pekan, dipotong dari tutorial pekan itu |
 | [`latihan/`](latihan/) | File latihan Excel untuk tiap tutorial (sheet Latihan, Kunci Jawaban, Tantangan) |
-| [`videos/`](videos/) | Aset dan paket upload per video. T1 sudah jadi video animasi lewat Remotion: [`videos/T1/upload.md`](videos/T1/upload.md) |
+| [`videos/`](videos/) | Aset dan paket upload per video. T1 sudah jadi video animasi lewat Remotion: [`videos/T1/upload.md`](videos/T1/upload.md). Shorts pekan 1: [`videos/shorts-pekan-1.md`](videos/shorts-pekan-1.md). Logo, musik, dan sound effect bersama ada di [`assets/`](assets/) |
 
 Shorts juga bisa dibikin lewat engine TikTok di repo ini (`python -m engine new "topik"`), tapi ingat channel YouTube ini **tanpa voice over**, jadi pakai versi tanpa audio narasi.
 
@@ -21,6 +21,7 @@ Tutorial bisa dibikin sebagai animasi Excel di Remotion, tanpa rekam layar: nask
 ```
 cd video && npm install
 npm run render:youtube -- T1      # youtube/videos/T1/T1.mp4 + T1-thumbnail.png
+npm run render:youtube -- S01     # Shorts 9:16 (naskah di video/src/youtube/shorts.ts)
 npm run studio                    # preview sambil edit naskah
 ```
 

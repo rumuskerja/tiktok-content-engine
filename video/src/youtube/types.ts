@@ -51,4 +51,5 @@ export type Tutorial = {
   music?: string | null; // file in the public dir
   sfx?: { pop: string; whoosh: string } | null; // step and transition sounds, files in the public dir
   logo?: string | null;
+  header?: { series: string; title: string }; // 9:16 Shorts: series label and hook above the sheet
 };

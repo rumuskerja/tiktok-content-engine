@@ -7,5 +7,5 @@ __pycache__/
 node_modules/
 
 # Small sound effects used by the YouTube tutorials
-!youtube/videos/*/*.wav
-!youtube/videos/*/music.mp3
+!youtube/assets/*.wav
+!youtube/assets/music.mp3

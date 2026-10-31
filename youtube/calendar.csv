@@ -1,7 +1,7 @@
 tanggal,hari,minggu,format,pillar,level,judul,hook_3_detik,brief,file_latihan,status
-2026-10-30,Jumat,1,Tutorial (19.00),Rumus Sakti,Menengah,"T1 · Berhenti Pakai VLOOKUP, Ini Penggantinya di 2026","""VLOOKUP udah pensiun.""",videos/T1/upload.md,T1,siap
-2026-10-31,Sabtu,1,Short (12.00),Rumus Sakti,-,S01 · 1 Rumus 1 Hari: XLOOKUP dalam 30 detik,-,shorts.md,T1,belum
-2026-11-01,Minggu,1,Short (12.00),Rumus Sakti,-,S02 · Tebak Hasil Rumus: XLOOKUP kalau data nggak ketemu,-,shorts.md,T1,belum
+2026-10-30,Jumat,1,Tutorial (19.00),Rumus Sakti,Menengah,"T1 · Berhenti Pakai VLOOKUP, Ini Penggantinya di 2026","""VLOOKUP udah pensiun.""",videos/T1/upload.md,T1,tayang
+2026-10-31,Sabtu,1,Short (12.00),Rumus Sakti,-,S01 · 1 Rumus 1 Hari: XLOOKUP dalam 30 detik,-,videos/shorts-pekan-1.md,T1,siap
+2026-11-01,Minggu,1,Short (12.00),Rumus Sakti,-,S02 · Tebak Hasil Rumus: XLOOKUP kalau data nggak ketemu,-,videos/shorts-pekan-1.md,T1,siap
 2026-11-03,Selasa,1,Produksi,-,-,"Siapkan T2: render video, thumbnail, isi upload.md",-,briefs/T2-power-query.md,T2,belum
 2026-11-06,Jumat,2,Tutorial (19.00),Otomasi,Menengah,T2 · Laporan 2 Jam Jadi 2 Menit dengan Power Query,Timer 2:00:00 jadi 0:02:00,briefs/T2-power-query.md,T2,belum
 2026-11-07,Sabtu,2,Short (12.00),Otomasi,-,S03 · Excel vs Lembur: gabung 3 file cabang tanpa copy-paste,-,shorts.md,T2,belum
