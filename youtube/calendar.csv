@@ -1,5 +1,5 @@
 tanggal,hari,minggu,format,pillar,level,judul,hook_3_detik,brief,file_latihan,status
-2026-10-30,Jumat,1,Tutorial (19.00),Rumus Sakti,Menengah,"T1 · Berhenti Pakai VLOOKUP, Ini Penggantinya di 2026","""VLOOKUP udah pensiun.""",videos/T1/upload.md,T1,tayang
+2026-10-30,Jumat,1,Tutorial (19.00),Rumus Sakti,Menengah,"T1 · Berhenti Pakai VLOOKUP, Ini Penggantinya di 2026","""VLOOKUP udah pensiun.""",videos/T1/upload.md,T1,siap
 2026-10-31,Sabtu,1,Short (12.00),Rumus Sakti,-,S01 · 1 Rumus 1 Hari: XLOOKUP dalam 30 detik,-,videos/shorts-pekan-1.md,T1,siap
 2026-11-01,Minggu,1,Short (12.00),Rumus Sakti,-,S02 · Tebak Hasil Rumus: XLOOKUP kalau data nggak ketemu,-,videos/shorts-pekan-1.md,T1,siap
 2026-11-03,Selasa,1,Produksi,-,-,"Siapkan T2: render video, thumbnail, isi upload.md",-,briefs/T2-power-query.md,T2,belum
