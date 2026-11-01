@@ -5,6 +5,8 @@ import { Tutorial, tutorialFrames } from "./youtube/Tutorial";
 import { Thumbnail } from "./youtube/Thumbnail";
 import { t1 } from "./youtube/t1";
 import { s01, s02 } from "./youtube/shorts";
+import { lnd, lndShorts } from "./youtube/lnd";
+import { LndThumbnail } from "./youtube/LndThumbnail";
 
 const placeholder: VideoProps = {
   fps: 30,
@@ -45,8 +47,10 @@ export const Root: React.FC = () => (
       fps={30}
       durationInFrames={1}
     />
+    <Composition id="LND" component={Tutorial} defaultProps={lnd} width={1920} height={1080} fps={lnd.fps} durationInFrames={tutorialFrames(lnd)} />
+    <Composition id="LND-thumbnail" component={LndThumbnail} defaultProps={{ logo: "logo.png" }} width={1280} height={720} fps={30} durationInFrames={1} />
     {/* YouTube Shorts (9:16), same component in a vertical layout. */}
-    {[s01, s02].map((s) => (
+    {[s01, s02, ...lndShorts].map((s) => (
       <Composition key={s.id} id={s.id} component={Tutorial} defaultProps={s} width={1080} height={1920} fps={s.fps} durationInFrames={tutorialFrames(s)} />
     ))}
   </>

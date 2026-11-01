@@ -12,22 +12,11 @@ import {
 import { createContext, useContext } from "react";
 import "@fontsource/plus-jakarta-sans/latin-500.css";
 import "@fontsource/plus-jakarta-sans/latin-800.css";
-import type { Beat, Cell, Sheet, Tutorial as TutorialProps, Value } from "./types";
+import type { Beat, Cell, DashState, Sheet, Tutorial as TutorialProps, Value } from "./types";
+import { DashView } from "./Dash";
 
-export const B = {
-  navy: "#0F1C2E",
-  navy2: "#16294A",
-  teal: "#2EC4B6",
-  yellow: "#FFC857",
-  white: "#F5F7FA",
-  red: "#E5585B",
-  green: "#3DDC84",
-  grid: "#D9DEE5",
-  sheetBg: "#FFFFFF",
-  ink: "#1F2937",
-};
-export const font = "'Plus Jakarta Sans', sans-serif";
-export const mono = "'DejaVu Sans Mono', 'Menlo', 'Consolas', monospace";
+import { B, font, mono } from "./theme";
+export { B, font, mono };
 
 const TITLE_H = 48;
 const RIBBON_H = 64;
@@ -38,7 +27,7 @@ const ROWHEAD_W = 64;
 const COLHEAD_H = 40;
 const ROW_H = 46;
 const EXTRA_COL_W = 150;
-const N_COLS = 12;
+const nCols = (sheet: Sheet) => Math.max(12, sheet.widths.length + 1);
 const N_ROWS = 32;
 
 // The Excel window fills the frame in 16:9; in a 9:16 Short it sits under a
@@ -84,12 +73,13 @@ const rangeRect = (sheet: Sheet, range: string) => {
 
 // ---------- timeline ----------
 
-type Sticky = { sheet: string; focus: string; active: string; step: string };
+type Sticky = { sheet: string; focus: string; active: string; step: string; dash: DashState | null };
+const TRANSIENT = ["open", "cursor", "spot", "zoom"] as const;
 type Timed = { beat: Beat; from: number; frames: number; sticky: Sticky; typedFrom: number };
 
 const buildTimeline = (t: TutorialProps): Timed[] => {
   let from = 0;
-  let sticky: Sticky = { sheet: t.sheets[0].name, focus: "A1:G15", active: "A1", step: "" };
+  let sticky: Sticky = { sheet: t.sheets[0].name, focus: "A1:G15", active: "A1", step: "", dash: null };
   let lastType: { cell: string; len: number } | null = null;
   return t.beats.map((beat) => {
     sticky = {
@@ -97,6 +87,7 @@ const buildTimeline = (t: TutorialProps): Timed[] => {
       focus: beat.focus ?? sticky.focus,
       active: beat.type?.cell ?? beat.active ?? sticky.active,
       step: beat.card?.step ?? sticky.step,
+      dash: nextDash(sticky.dash, beat),
     };
     const typedFrom = beat.type?.cont && lastType?.cell === beat.type.cell ? lastType.len : 0;
     if (beat.type) lastType = { cell: beat.type.cell, len: beat.type.text.length };
@@ -105,6 +96,20 @@ const buildTimeline = (t: TutorialProps): Timed[] => {
     from += frames;
     return item;
   });
+};
+
+// `dash` merges into the previous state; open/cursor/spot/zoom last one beat.
+const nextDash = (prev: DashState | null, beat: Beat): DashState | null => {
+  if (beat.dash === null) return null;
+  if (beat.dash === undefined) {
+    if (beat.sheet || !prev) return null;
+    const keep = { ...prev };
+    for (const k of TRANSIENT) delete keep[k];
+    return keep;
+  }
+  const merged: DashState = { show: [], dept: "Semua", metode: "Semua", ...(prev ?? {}), ...beat.dash };
+  for (const k of TRANSIENT) if (!(k in beat.dash)) delete merged[k];
+  return merged;
 };
 
 export const tutorialFrames = (t: TutorialProps) => buildTimeline(t).reduce((n, b) => n + b.frames, 0);
@@ -131,7 +136,7 @@ const setEntries = (t: Timed) =>
 // When in its beat (0..1) each `set` entry lands.
 const setTimes = (t: Timed) => {
   const entries = setEntries(t);
-  return entries.map((_, i) => (t.beat.type ? 0.72 : t.beat.cascade ? 0.1 + (0.7 * i) / Math.max(1, entries.length) : 0));
+  return entries.map((_, i) => (t.beat.type ? 0.72 : t.beat.dropdown ? 0.75 : t.beat.cascade ? 0.1 + (0.7 * i) / Math.max(1, entries.length) : 0));
 };
 
 const TYPE_START = 0.06;
@@ -139,8 +144,11 @@ const TYPE_END = 0.62;
 
 // ---------- formatting ----------
 
-const fmt = (v: Value, money: boolean) => {
+const fmt = (v: Value, money: boolean, cf?: Cell["fmt"]) => {
   if (v === null) return "";
+  if (typeof v === "number" && cf === "pct") return `${Math.round(v * 100)}%`;
+  if (typeof v === "number" && cf === "dec1") return v.toFixed(1).replace(".", ",");
+  if (typeof v === "number" && cf === "plus1") return `+${v.toFixed(1).replace(".", ",")}`;
   if (typeof v === "number") return money || Math.abs(v) >= 1000 ? v.toLocaleString("id-ID") : String(v);
   return v;
 };
@@ -175,8 +183,12 @@ const TitleBar: React.FC<{ file: string; channel: string; logo?: string | null }
   );
 };
 
-const Ribbon: React.FC = () => {
+const Ribbon: React.FC<{ menu?: string; local: number }> = ({ menu, local }) => {
   const { W, short } = useDims();
+  const lit = menu ?? "Formulas";
+  const base = short ? ["Home", "Insert", "Formulas", "Data"] : ["File", "Home", "Insert", "Page Layout", "Formulas", "Data", "Review", "View"];
+  const tabs = base.includes(lit) ? base : short ? ["Home", "Insert", lit] : [...base, lit];
+  const glow = menu ? 0.5 + 0.5 * Math.sin(local / 5) : 0;
   return (
   <div
     style={{
@@ -195,14 +207,15 @@ const Ribbon: React.FC = () => {
       color: B.ink,
     }}
   >
-    {(short ? ["Home", "Insert", "Formulas", "Data"] : ["File", "Home", "Insert", "Page Layout", "Formulas", "Data", "Review", "View"]).map((tab) => (
+    {tabs.map((tab) => (
       <div
         key={tab}
         style={{
-          fontWeight: tab === "Formulas" ? 800 : 500,
-          color: tab === "Formulas" ? "#1D6F42" : B.ink,
-          borderBottom: tab === "Formulas" ? "3px solid #1D6F42" : "3px solid transparent",
+          fontWeight: tab === lit ? 800 : 500,
+          color: tab === lit ? "#1D6F42" : B.ink,
+          borderBottom: tab === lit ? "3px solid #1D6F42" : "3px solid transparent",
           paddingBottom: 4,
+          ...(menu && tab === lit ? { background: `rgba(46,196,182,${0.15 + 0.25 * glow})`, padding: "4px 12px", borderRadius: 6 } : {}),
         }}
       >
         {tab}
@@ -237,7 +250,7 @@ const FormulaBar: React.FC<{ active: string; text: string; typing: boolean; fram
   >
     <div
       style={{
-        width: short ? 90 : 150,
+        width: short ? 150 : 190,
         height: 50,
         marginLeft: 16,
         border: `1px solid ${B.grid}`,
@@ -252,7 +265,7 @@ const FormulaBar: React.FC<{ active: string; text: string; typing: boolean; fram
       {active}
     </div>
     <div style={{ margin: short ? "0 12px" : "0 22px", fontStyle: "italic", color: "#6B7280", fontFamily: "serif", fontSize: 30 }}>fx</div>
-    <div style={{ fontFamily: mono, fontSize: short ? 24 : 32, whiteSpace: "pre", overflow: "hidden", flex: 1, display: "flex", justifyContent: short && text.length > 34 ? "flex-end" : "flex-start", paddingRight: 16 }}>
+    <div style={{ fontFamily: mono, fontSize: short ? 24 : 32, whiteSpace: "pre", overflow: "hidden", flex: 1, display: "flex", justifyContent: text.length > (short ? 50 : 80) ? "flex-end" : "flex-start", paddingRight: 16 }}>
       <span>
         {text}
         {typing && <span style={{ opacity: Math.floor(frame / 8) % 2 ? 0 : 1, color: "#1D6F42" }}>|</span>}
@@ -310,6 +323,7 @@ const Grid: React.FC<{
 }> = ({ sheet, book, active, typed }) => {
   const act = parseCell(active);
   const cells: React.ReactNode[] = [];
+  const N_COLS = nCols(sheet);
   for (let c = 0; c < N_COLS; c++) {
     const x = colX(sheet, c);
     cells.push(
@@ -362,7 +376,8 @@ const Grid: React.FC<{
     for (let c = 0; c < N_COLS; c++) {
       const addr = `${colLetter(c)}${r + 1}`;
       const cell = book.get(key(sheet.name, addr));
-      const header = r === 0 && c < sheet.widths.length;
+      const header = r === 0 && c < sheet.widths.length && !sheet.plain;
+      const inTable = sheet.table && c < sheet.widths.length && r <= sheet.rows.length - 1;
       const isNum = typeof cell?.v === "number";
       cells.push(
         <div
@@ -375,19 +390,21 @@ const Grid: React.FC<{
             height: ROW_H,
             borderRight: `1px solid ${B.grid}`,
             borderBottom: `1px solid ${B.grid}`,
-            background: header ? "#E6F7F5" : B.sheetBg,
+            background: header ? (sheet.table ? B.navy2 : "#E6F7F5") : inTable && r % 2 === 0 ? "#E3F6F4" : B.sheetBg,
             display: "flex",
             alignItems: "center",
             justifyContent: isNum ? "flex-end" : "flex-start",
             padding: "0 12px",
             fontSize: 24,
             fontWeight: header ? 800 : 500,
-            color: cell?.error ? B.red : B.ink,
+            color: cell?.error ? B.red : header && sheet.table ? "white" : B.ink,
             whiteSpace: "nowrap",
-            overflow: "hidden",
+            overflow: sheet.plain ? "visible" : "hidden",
+            zIndex: sheet.plain && cell ? 1 : undefined,
           }}
         >
-          {fmt(cell?.v ?? null, sheet.money?.includes(c) ?? false)}
+          {fmt(cell?.v ?? null, sheet.money?.includes(c) ?? false, cell?.fmt)}
+          {header && sheet.table && <span style={{ marginLeft: "auto", fontSize: 16, opacity: 0.8 }}>▾</span>}
         </div>,
       );
     }
@@ -432,6 +449,49 @@ const Grid: React.FC<{
         }}
       />
     </>
+  );
+};
+
+// Data Validation list: arrow button on the cell, list below, the pick lights up then lands.
+const Dropdown: React.FC<{ sheet: Sheet; dd: NonNullable<Beat["dropdown"]>; frac: number }> = ({ sheet, dd, frac }) => {
+  const r = rangeRect(sheet, dd.cell);
+  const open = frac > 0.12 && frac < 0.75;
+  return (
+    <>
+      <div style={{ position: "absolute", left: r.x + r.w - 2, top: r.y, width: 34, height: r.h, background: "#F3F4F6", border: "1px solid #9CA3AF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, zIndex: 6 }}>▼</div>
+      {open && (
+        <div style={{ position: "absolute", left: r.x, top: r.y + r.h, width: r.w + 32, background: "white", border: "1px solid #9CA3AF", boxShadow: "0 8px 20px rgba(0,0,0,0.2)", zIndex: 7 }}>
+          {dd.items.map((it, i) => (
+            <div key={it} style={{ height: 36, display: "flex", alignItems: "center", padding: "0 10px", fontSize: 20, background: dd.pick === i && frac > 0.4 ? "#D1E7DD" : "white", fontWeight: dd.pick === i && frac > 0.4 ? 800 : 500 }}>
+              {it}
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  );
+};
+
+const Dialog: React.FC<{ dialog: NonNullable<Beat["dialog"]>; local: number; fps: number }> = ({ dialog, local, fps }) => {
+  const { W, H, short } = useDims();
+  const pop = spring({ frame: local - 6, fps, config: { damping: 15, stiffness: 160 } });
+  const w = short ? 860 : 760;
+  return (
+    <div style={{ position: "absolute", left: (W - w) / 2, top: H * 0.3, width: w, background: "white", borderRadius: 10, boxShadow: "0 30px 80px rgba(0,0,0,0.35)", border: "1px solid #CBD2DC", zIndex: 18, opacity: pop, transform: `scale(${0.9 + pop * 0.1})` }}>
+      <div style={{ padding: "16px 24px", fontSize: 26, fontWeight: 800, color: B.ink, borderBottom: `1px solid ${B.grid}` }}>{dialog.title}</div>
+      <div style={{ padding: "18px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
+        {dialog.rows.map(([k, v]) => (
+          <div key={k + v} style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 24 }}>
+            <div style={{ color: "#4B5563", minWidth: k.length > 2 ? 220 : 0 }}>{k}</div>
+            <div style={{ flex: k.length > 2 ? 1 : undefined, border: k.length > 2 ? `2px solid ${B.teal}` : "none", borderRadius: 6, padding: "6px 12px", fontFamily: v.startsWith("=") ? mono : font, fontWeight: 800, color: B.navy }}>{v}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, padding: "0 24px 18px" }}>
+        <div style={{ background: "#1D6F42", color: "white", fontWeight: 800, fontSize: 22, padding: "8px 34px", borderRadius: 6, transform: `scale(${local > 0 && Math.floor(local) % 60 > 48 ? 0.94 : 1})` }}>OK</div>
+        <div style={{ border: `1px solid ${B.grid}`, fontSize: 22, padding: "8px 24px", borderRadius: 6 }}>Cancel</div>
+      </div>
+    </div>
   );
 };
 
@@ -568,13 +628,13 @@ const PartsCard: React.FC<{ parts: NonNullable<Beat["parts"]>; local: number; fp
   );
 };
 
-const StepLabel: React.FC<{ step: string; badge?: string; keycap?: string; local: number }> = ({ step, badge, keycap, local }) => {
+const StepLabel: React.FC<{ step: string; badge?: string; keycap?: string; local: number; dash?: boolean }> = ({ step, badge, keycap, local, dash }) => {
   const { short } = useDims();
   return (
   <div
     style={{
       position: "absolute",
-      top: short ? GRID_TOP + 14 : TITLE_H + RIBBON_H + 12,
+      top: dash ? TITLE_H + 9 : short ? GRID_TOP + 14 : TITLE_H + RIBBON_H + 12,
       right: 30,
       display: "flex",
       flexDirection: "column",
@@ -757,8 +817,9 @@ export const Tutorial: React.FC<TutorialProps> = (t) => {
       typing = p < 1;
     }
   }
+  const dash = cur.sticky.dash;
   const activeCell = book.get(key(sheet.name, cur.sticky.active));
-  const barText = typed ?? activeCell?.f ?? (activeCell ? fmt(activeCell.v, false) : "");
+  const barText = dash ? dash.dept : typed ?? activeCell?.f ?? (activeCell ? fmt(activeCell.v, false, activeCell.f ? activeCell.fmt : undefined) : "");
 
   // Camera eases from the previous beat's framing.
   const prev = timeline[idx - 1];
@@ -787,9 +848,14 @@ export const Tutorial: React.FC<TutorialProps> = (t) => {
       <DimCtx.Provider value={dims}>
       <div style={{ position: "absolute", top: short ? SHORT.top : 0, left: 0, width: dims.W, height: dims.H, overflow: "hidden", background: "white" }}>
       <TitleBar file={`${t.id}.xlsx`} channel={t.channel} logo={t.logo} />
-      <Ribbon />
-      <FormulaBar active={cur.sticky.active} text={String(barText)} typing={typing} frame={frame} />
-      <div style={{ position: "absolute", top: GRID_TOP, left: 0, width: VW, height: VH, overflow: "hidden", background: "white" }}>
+      <Ribbon menu={cur.beat.menu} local={local} />
+      {!dash && <FormulaBar active={cur.beat.nameBox ?? (dash ? "B6" : cur.sticky.active)} text={String(barText)} typing={typing} frame={frame} />}
+      {dash && (
+        <div style={{ position: "absolute", top: TITLE_H + RIBBON_H, left: 0, width: VW, height: VH + FBAR_H, overflow: "hidden" }}>
+          <DashView state={dash} prev={prev?.sticky.dash ?? null} local={local} frames={cur.frames} fps={fps} W={VW} H={VH + FBAR_H} compact={short} />
+        </div>
+      )}
+      <div style={{ position: "absolute", top: GRID_TOP, left: 0, width: VW, height: VH, overflow: "hidden", background: "white", display: dash ? "none" : "block" }}>
         <div
           style={{
             position: "absolute",
@@ -803,16 +869,18 @@ export const Tutorial: React.FC<TutorialProps> = (t) => {
           {cur.beat.highlight && <Box sheet={sheet} range={cur.beat.highlight} color={B.teal} local={local} />}
           {cur.beat.bad && <Box sheet={sheet} range={cur.beat.bad} color={B.red} local={local} />}
           {cur.beat.good && <Box sheet={sheet} range={cur.beat.good} color={B.green} local={local} />}
+          {cur.beat.dropdown && <Dropdown sheet={sheet} dd={cur.beat.dropdown} frac={frac} />}
         </div>
       </div>
-      <SheetTabs sheets={t.sheets} current={sheet.tabAs ?? sheet.name} />
-      {!cur.beat.card && <StepLabel step={cur.sticky.step} badge={cur.beat.badge} keycap={cur.beat.key} local={local} />}
+      <SheetTabs sheets={t.sheets} current={dash ? "Dashboard" : sheet.tabAs ?? sheet.name} />
+      {cur.beat.dialog && <Dialog dialog={cur.beat.dialog} local={local} fps={fps} />}
+      {!cur.beat.card && <StepLabel step={cur.sticky.step} badge={cur.beat.badge} keycap={cur.beat.key} local={local} dash={!!dash} />}
       {cur.beat.parts && <PartsCard parts={cur.beat.parts} local={local} fps={fps} />}
       </div>
       </DimCtx.Provider>
       {cur.beat.caption && !cur.beat.card && <Caption key={idx} text={cur.beat.caption} local={local} fps={fps} short={short} />}
       {cur.beat.card && <CardView card={cur.beat.card} local={local} frames={cur.frames} fps={fps} logo={t.logo} />}
-      {t.logo && !short && cur.beat.card?.kind !== "logo" && cur.beat.card?.kind !== "end" && (
+      {t.logo && !short && !dash && cur.beat.card?.kind !== "logo" && cur.beat.card?.kind !== "end" && (
         <Img
           src={staticFile(t.logo)}
           style={{ position: "absolute", right: 24, bottom: TABS_H + 20, width: 120, height: 120, zIndex: 35 }}
