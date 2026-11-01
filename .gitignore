@@ -9,3 +9,4 @@ node_modules/
 # Small sound effects used by the YouTube tutorials
 !youtube/assets/*.wav
 !youtube/assets/music.mp3
+!youtube/assets/music-upbeat.mp3

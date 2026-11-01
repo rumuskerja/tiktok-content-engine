@@ -21,5 +21,6 @@ const run = (args) => execFileSync("npx", ["remotion", ...args, `--public-dir=${
 
 run(["render", "src/index.ts", id, path.join(out, `${id}.mp4`), "--codec=h264", "--crf=18"]);
 // Shorts get their cover frame picked in the YouTube app, so only tutorials have a thumbnail.
-if (id.startsWith("T")) run(["still", "src/index.ts", `${id}-thumbnail`, path.join(out, `${id}-thumbnail.png`)]);
+const isShort = /^S\d|-S\d/.test(id);
+if (!isShort) run(["still", "src/index.ts", `${id}-thumbnail`, path.join(out, `${id}-thumbnail.png`)]);
 console.log(`Rendered ${id} into ${out}`);
