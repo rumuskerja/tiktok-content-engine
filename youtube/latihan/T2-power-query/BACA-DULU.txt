@@ -1,0 +1,6 @@
+Tiga file ini sengaja berantakan, mirip kiriman cabang beneran:
+- Jakarta: tanggal format DD-MM-YYYY
+- Bandung: ada baris kosong dan baris TOTAL di bawah
+- Surabaya: tanggal tersimpan sebagai teks dd/mm/yyyy
+- Semua: nama produk kadang huruf besar dan ada spasi berlebih, qty kadang teks
+Taruh ketiganya di satu folder, lalu Data > Get Data > From File > From Folder.

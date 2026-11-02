@@ -1,0 +1,143 @@
+{
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "durationInFrames": 851,
+  "channel": "Rumus Kerja Bertumbuh",
+  "topic": "Kerja keras doang nggak bikin naik level",
+  "audio": null,
+  "scenes": [
+    {
+      "role": "hook",
+      "index": 0,
+      "line": "Kerja keras doang nggak bakal bikin kamu naik level.",
+      "onScreen": "Kerja keras ≠ naik level",
+      "from": 0,
+      "durationInFrames": 119
+    },
+    {
+      "role": "beat",
+      "index": 1,
+      "line": "Rumus pertama: kerjaan yang nggak kelihatan, dianggap nggak ada. Kirim update singkat ke atasan tiap Jumat.",
+      "onScreen": "Bikin kerjamu kelihatan",
+      "from": 119,
+      "durationInFrames": 196
+    },
+    {
+      "role": "beat",
+      "index": 2,
+      "line": "Rumus kedua: jangan cuma nyelesaiin tugas. Cari masalah yang paling bikin tim pusing, terus pecahin itu.",
+      "onScreen": "Selesaikan masalah, bukan tugas",
+      "from": 316,
+      "durationInFrames": 197
+    },
+    {
+      "role": "beat",
+      "index": 3,
+      "line": "Rumus ketiga: catat setiap hasil pakai angka. Hemat dua jam seminggu? Tulis. Itu bahan nego gaji kamu nanti.",
+      "onScreen": "Catat hasil pakai angka",
+      "from": 512,
+      "durationInFrames": 220
+    },
+    {
+      "role": "cta",
+      "index": 4,
+      "line": "Follow buat rumus kerja berikutnya. Bertumbuh bareng, yuk!",
+      "onScreen": "Follow buat part 2",
+      "from": 732,
+      "durationInFrames": 119
+    }
+  ],
+  "captions": [
+    {
+      "text": "Kerja keras doang nggak",
+      "from": 0,
+      "to": 36
+    },
+    {
+      "text": "bakal bikin kamu naik",
+      "from": 36,
+      "to": 71
+    },
+    {
+      "text": "level.",
+      "from": 71,
+      "to": 107
+    },
+    {
+      "text": "Rumus pertama: kerjaan yang",
+      "from": 119,
+      "to": 167
+    },
+    {
+      "text": "nggak kelihatan, dianggap nggak",
+      "from": 167,
+      "to": 214
+    },
+    {
+      "text": "ada. Kirim update singkat",
+      "from": 214,
+      "to": 262
+    },
+    {
+      "text": "ke atasan tiap Jumat.",
+      "from": 262,
+      "to": 310
+    },
+    {
+      "text": "Rumus kedua: jangan cuma",
+      "from": 316,
+      "to": 363
+    },
+    {
+      "text": "nyelesaiin tugas. Cari masalah",
+      "from": 363,
+      "to": 411
+    },
+    {
+      "text": "yang paling bikin tim",
+      "from": 411,
+      "to": 458
+    },
+    {
+      "text": "pusing, terus pecahin itu.",
+      "from": 458,
+      "to": 506
+    },
+    {
+      "text": "Rumus ketiga: catat setiap",
+      "from": 512,
+      "to": 555
+    },
+    {
+      "text": "hasil pakai angka. Hemat",
+      "from": 555,
+      "to": 598
+    },
+    {
+      "text": "dua jam seminggu? Tulis.",
+      "from": 598,
+      "to": 641
+    },
+    {
+      "text": "Itu bahan nego gaji",
+      "from": 641,
+      "to": 683
+    },
+    {
+      "text": "kamu nanti.",
+      "from": 683,
+      "to": 726
+    },
+    {
+      "text": "Follow buat rumus kerja",
+      "from": 732,
+      "to": 780
+    },
+    {
+      "text": "berikutnya. Bertumbuh bareng, yuk!",
+      "from": 780,
+      "to": 828
+    }
+  ]
+}
